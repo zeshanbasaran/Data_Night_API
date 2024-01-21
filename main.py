@@ -2,10 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import sqlite3
 
+con = sqlite3.connect("dates.db")
+cur = con.cursor()
+
 app = FastAPI()   
 @app.get("/") 
 async def main_route():     
     return {"message": "Welcome to our API!"}
+
+@app.get("/dates") 
+async def all_dates():     
+    return cur.execute("SELECT date_name FROM dates")
 
 class DateCreate(BaseModel):
     date_name: str
@@ -47,4 +54,12 @@ def create_date(date: DateCreate):
     finally:
         connection.close()
 
-d1 = DateCreate("Eating Out", "Bed")
+def create_data():
+    data = [
+        (1, "Skate", "Outside"), 
+        (2, "Cuddle", "Inside"), 
+        (3, "Get Starbucks", "Outside")
+    ]
+
+    cur.executemany("INSERT INTO dates VALUES(?, ?, ?)", data)
+    con.commit()
