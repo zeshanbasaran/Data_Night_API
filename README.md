@@ -14,4 +14,8 @@ REST API that returns a random date idea.
 
 ## Run locally
 
+**To seed the database**
+`python main.py`
+
+**Run API locally**
 `uvicorn main:app --reload`
